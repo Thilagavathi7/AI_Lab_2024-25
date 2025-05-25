@@ -1,75 +1,94 @@
-# Ex.No: 11  Planning –  Block World Problem 
+# Ex.No: 10  Logic Programming –  Simple queries from facts and rules                                                        
 ### REGISTER NUMBER : 212222220053
 ### AIM: 
-To find the sequence of plan for Block word problem using PDDL  
+To write a prolog program to find the answer of query. 
 ###  Algorithm:
-Step 1 :  Start the program <br>
-Step 2 : Create a domain for Block world Problem <br>
-Step 3 :  Create a domain by specifying predicates clear, on table, on, arm-empty, holding. <br>
-Step 4 : Specify the actions pickup, putdown, stack and un-stack in Block world problem <br>
-Step 5 :  In pickup action, Robot arm pick the block on table. Precondition is Block is on table and no other block on specified block and arm-hand empty.<br>
-Step 6:  In putdown action, Robot arm place the block on table. Precondition is robot-arm holding the block.<br>
-Step 7 : In un-stack action, Robot arm pick the block on some block. Precondition is Block is on another block and no other block on specified block and arm-hand empty.<br>
-Step 8 : In stack action, Robot arm place the block on under block. Precondition is Block holded by robot arm and no other block on under block.<br>
-Step 9 : Define a problem for block world problem.<br> 
-Step 10 : Obtain the plan for given problem.<br> 
-     
+ Step 1: Start the program <br> 
+ Step 2: Convert the sentence into First order Logic  <br> 
+ Step 3:  Convert the sentence into Horn clause form  <br> 
+ Step 4: Add rules and predicates in a program   <br> 
+ Step 5:  Pass the query to program. <br> 
+ Step 6: Prolog interpreter shows the output and return answer. <br> 
+ Step 8:  Stop the program.
 ### Program:
-domain.pddl 
+### Task 1:
+Construct the FOL representation for the following sentences <br> 
+1.	John likes all kinds of food.  <br> 
+2.	Apples are food.  <br> 
+3.	Chicken is a food.  <br> 
+4.	Sue eats everything Bill eats. <br> 
+5.	 Bill eats peanuts  <br> 
+   Convert into clause form and Prove that John like Apple by using Prolog. <br> 
+### Program:
 ```
-(define (domain blocksworld)
-(:requirements :strips :equality)
-(:predicates (clear ?x)
-             (on-table ?x)
-             (arm-empty)
-             (holding ?x)
-             (on ?x ?y))
-(:action pickup
-  :parameters (?ob)
-  :precondition (and (clear ?ob) (on-table ?ob) (arm-empty))
-  :effect (and (holding ?ob) (not (clear ?ob)) (not (on-table ?ob)) 
-               (not (arm-empty))))
-(:action putdown
-  :parameters  (?ob)
-  :precondition (and (holding ?ob))
-  :effect (and (clear ?ob) (arm-empty) (on-table ?ob) 
-               (not (holding ?ob))))
-(:action stack
-  :parameters  (?ob ?underob)
-  :precondition (and  (clear ?underob) (holding ?ob))
-  :effect (and (arm-empty) (clear ?ob) (on ?ob ?underob)
-               (not (clear ?underob)) (not (holding ?ob))))
-(:action unstack
-  :parameters  (?ob ?underob)
-  :precondition (and (on ?ob ?underob) (clear ?ob) (arm-empty))
-  :effect (and (holding ?ob) (clear ?underob)
-               (not (on ?ob ?underob)) (not (clear ?ob)) (not (arm-empty)))))
+likes(john,X):-
+ food(X).
+eats(bill,X):-
+ eats(sue,X).
+eats(Y,X):-
+ food(X).
+eats(bill,peanuts).
+food(apple).
+food(chicken).
+food(peanuts).
 ```
-### Input 
-Problem 1:  Problem.pddl
-```
-(define (problem pb1)
-   (:domain blocksworld)
-   (:objects a b)
-   (:init (on-table a) (on-table b)  (clear a)  (clear b) (arm-empty))
-   (:goal (and (on a b))))
-```
-### Output/Plan:
-![image](https://github.com/Siddarthan999/AI_Lab_2023-24/assets/91734840/319741c3-79cd-4df3-9372-e6e188a7d234)
 
-### Input 
-Problem 2:  Problem2.pddl
+### Output:
+
+![image](https://github.com/Mena-Rossini/AI_Lab_2023-24/assets/102855266/aa9e4ec8-9481-4f69-9d95-997d6c1f0d27)
+
+
+### Task 2:
+Consider the following facts and represent them in predicate form: <br>              
+1.	Steve likes easy courses. <br> 
+2.	Science courses are hard. <br> 
+3. All the courses in Have fun department are easy <br> 
+4. BK301 is Have fun department course.<br> 
+Convert the facts in predicate form to clauses and then prove by resolution: “Steve likes BK301 course”<br> 
+
+### Program:
 ```
-(define(problem pb3)
-	   (:domain blocksworld)
-	   (:objects a b c)
-	   (:init (on-table a) (on-table b)   (on-table c)  
-	          (clear a)  (clear b) (clear c) (arm-empty))
-	   (:goal (and (on a b) (on b c))))
+likes(steve,X):-
+ easycourse(X).
+hard(sciencecourse).
+easycourse(X):-
+ course(X,dept(havefun)).
+course(bk301,dept(havefun)).
+```
+
+### Output:
+
+![image](https://github.com/Mena-Rossini/AI_Lab_2023-24/assets/102855266/4bcbb149-8176-4837-94ba-b31da9e63479)
+
+### Task 3:
+Consider the statement <br> 
+“This is a crime for an American to sell weapons to hostile nations. The Nano , enemy of America has some missiles and its missiles were sold it by Colonal West who is an American” <br> 
+Convert to Clause form and prove west is criminal by using Prolog.<br> 
+### Program:
+```
+criminal(X):-
+ american(X),
+ weapon(Y),
+ hostile(Z),
+ sells(X,Y,Z).
+weapon(Y):-
+ missile(Y).
+hostile(Z):-
+ enemy(Z,X).
+sells(west,Y,nano):-
+ missile(Y),
+ owns(nano,Y).
+missile(m).
+owns(nano,m).
+enemy(nano,america).
+american(west). 
 
 ```
-### Output/Plan:
-![image](https://github.com/Siddarthan999/AI_Lab_2023-24/assets/91734840/29876f8a-e067-45d1-9c67-33fc9163563e)
+
+### Output:
+
+![image](https://github.com/Mena-Rossini/AI_Lab_2023-24/assets/102855266/dbb5a88f-3abe-4a4c-bdb9-25004dc168fb)
+
 
 ### Result:
-Thus the plan was found for the initial and goal state of block world problem.
+Thus the prolog programs were executed successfully and the answer of query was found.
